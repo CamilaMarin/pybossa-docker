@@ -47,9 +47,11 @@ RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.co
 
 RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
 
+USER postgres
+
 RUN /etc/init.d/postgresql start &&\
-    sudo su - postgres &&\
-    sudo psql -U postgres --no-password --command "CREATE USER pybossa WITH SUPERUSER PASSWORD 'tester';" &&\
+    #sudo su - postgres &&\
+    psql --command "CREATE USER pybossa WITH SUPERUSER PASSWORD 'tester';" &&\
     createdb pybossa -O pybossa
 
 # Populate the database
