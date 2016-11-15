@@ -33,7 +33,7 @@ WORKDIR /pybossa
 RUN pip install -r requirements.txt
 
 # Run Redis sentinel node
-RUN ls contrib/
+#RUN ls contrib/
 RUN redis-server contrib/sentinel.conf --sentinel
 
 # Set up PostgreSQL database
@@ -43,15 +43,18 @@ RUN redis-server contrib/sentinel.conf --sentinel
 #ENV PGHOST localhost
 
 # Set up PostgreSQL database
-RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.conf
+#RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.conf
 
-RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
+#RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
 
+USER root
+ADD /sudoers.txt /etc/sudoers
+RUN chmod 440 /etc/sudoers
 USER postgres
 
 RUN /etc/init.d/postgresql start &&\
-    #sudo su - postgres &&\
-    psql --command "CREATE USER pybossa WITH SUPERUSER PASSWORD 'tester';" &&\
+    sudo su - postgres &&\
+    psql --command "CREATE USER pybossa WITH SUPERUSER PASSWORD 'pybossa';" &&\
     createdb pybossa -O pybossa
 
 # Populate the database
@@ -66,8 +69,8 @@ RUN python cli.py db_create
 #python app_context_rqworker.py scheduled_jobs super high medium low
 
 # Start the Redis Sentinel
-RUN redis-server contrib/redis.conf
-RUN redis-server contrib/sentinel.conf --sentinel
+#RUN redis-server contrib/redis.conf
+#RUN redis-server contrib/sentinel.conf --sentinel
 
 EXPOSE 80
 

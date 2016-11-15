@@ -4,8 +4,8 @@ services:
   postgres:
     image: 'postgres:9.5'
     environment:
-      POSTGRES_USER: 'my_dockerized_app'
-      POSTGRES_PASSWORD: 'yourpassword'
+      - POSTGRES_USER=pybosssa
+      - POSTGRES_PASSWORD=pybossa
     ports:
       - '5432:5432'
     volumes:
